@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  jupyter:
+    build: ./jupyter
+    ports:
+      - "8888:8888"
+    entrypoint:
+      jupyter lab --ip='0.0.0.0' --port=8888 --no-browser --allow-root --NotebookApp.token='' --NotebookApp.password=''
+    volumes: 
+      - ./jupyter:/app
+    env_file: 
+      - ./jupyter/variables.env
+  postgresql:
+    image: "postgres:12.4"
+    restart: always
+    environment:
+      POSTGRES_DB: test
+      POSTGRES_USER: itguymichal
+      POSTGRES_PASSWORD: admin
+      PGDATA: /var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+  pgadmin:
+    image: "dpage/pgadmin4:latest"
+    restart: always
+    ports: 
+      - "80:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: itguymichal@itguymichal.com
+      PGADMIN_DEFAULT_PASSWORD: itguymichal
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+volumes:
+  db-data:
+  pgadmin-data:
